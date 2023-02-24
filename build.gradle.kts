@@ -2,7 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+
     id ("io.kotest.multiplatform") version "5.5.5"
+
 }
 
 group = "ru.otus.otusKotlin"
@@ -25,6 +27,7 @@ subprojects {
         kotlinOptions.jvmTarget = "11"
     }
 
+
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
     }
@@ -38,3 +41,4 @@ repositories {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
+
