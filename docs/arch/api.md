@@ -3,9 +3,9 @@
 ## Функции (эндпониты)
 
 1. POST /operation/new - добавление операции(Приход денег, траты)
-2. PUT /operation/update- обновление операции
-3. DELETE /operation/delete - удаление операции
-4. GET /report - отчет за определенны промежуток.
+2. POST /operation/update- обновление операции
+3. POST /operation/delete - удаление операции
+4. POST /report - отчет за определенны промежуток.
 
 ## Описание сущностей
 

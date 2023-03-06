@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 plugins {
     kotlin("jvm")
-    id ("io.kotest.multiplatform") version "5.5.5"
+    id ("io.kotest.multiplatform")
 }
 
 group = "ru.otus.otusKotlin"
