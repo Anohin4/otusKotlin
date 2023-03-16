@@ -1,7 +1,7 @@
-package ru.otus.otuskotlin.fintrack.mappers.v2
+package ru.otus.otuskotlin.fintrack.mappers
 
 import models.FinReportFilter
-import ru.otus.otusKotlin.api.v2.models.*
+import ru.otus.otuskotlin.fintrack.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
 import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs

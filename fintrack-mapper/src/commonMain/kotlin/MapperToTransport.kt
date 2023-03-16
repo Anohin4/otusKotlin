@@ -1,7 +1,8 @@
-import ru.otus.otusKotlin.api.v2.models.*
+package ru.otus.otuskotlin.fintrack.mappers
+
+import ru.otus.otuskotlin.fintrack.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
-import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs
 import ru.otus.otuskotlin.fintrack.mappers.v2.exceptions.UnknownRequestClassException
 
 
@@ -17,7 +18,7 @@ fun FinContext.toTransport() = when (command) {
 fun FinContext.fromTransportCreate() = OpCreateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == FinState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.toTransport(),
+    errors = this.errors.toTransportError(),
     operation = this.opResponse.toTransport()
 
 )
@@ -25,7 +26,7 @@ fun FinContext.fromTransportCreate() = OpCreateResponse(
 fun FinContext.fromTransportRead() = OpReadResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == FinState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.toTransport(),
+    errors = this.errors.toTransportError(),
     operation = this.opResponse.toTransport()
 
 )
@@ -33,21 +34,21 @@ fun FinContext.fromTransportRead() = OpReadResponse(
 fun FinContext.fromTransportUpdate() = OpUpdateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == FinState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.toTransport(),
+    errors = this.errors.toTransportError(),
     operation = this.opResponse.toTransport()
 )
 
 fun FinContext.fromTransportDelete() = OpDeleteResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == FinState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.toTransport(),
+    errors = this.errors.toTransportError(),
     operation = this.opResponse.toTransport()
 )
 
 fun FinContext.fromTransportReport() = OpReportResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == FinState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.toTransport(),
+    errors = this.errors.toTransportError(),
     operations = this.opsResponse.toTransport()
 )
 
@@ -68,7 +69,7 @@ private fun FinOperation.toTransport() = OpResponseObject(
 
 )
 
-private fun List<FinError>.toTransport() =
+private fun List<FinError>.toTransportError() =
     this
         .map { it.toTransport() }
         .toList()
@@ -81,20 +82,6 @@ private fun FinError.toTransport() = Error(
     message = message.takeIf { it.isNotBlank() }
 )
 
-fun FinWorkMode.transportToWorkNode() = when (this) {
-    FinWorkMode.PROD -> OpRequestDebugMode.PROD
-    FinWorkMode.TEST -> OpRequestDebugMode.TEST
-    FinWorkMode.STUB -> OpRequestDebugMode.STUB
-}
-
-fun FinStubs.transportToStubCase() = when (this) {
-    FinStubs.SUCCESS -> OpRequestDebugStubs.SUCCESS
-    FinStubs.NOT_FOUND -> OpRequestDebugStubs.NOT_FOUND
-    FinStubs.BAD_ID -> OpRequestDebugStubs.BAD_ID
-    FinStubs.BAD_AMOUNT -> OpRequestDebugStubs.BAD_AMOUNT
-    FinStubs.BAD_CATEGORY -> OpRequestDebugStubs.BAD_CATEGORY
-    FinStubs.NONE -> null
-}
 
 fun FinOperationType.toTransport() = when (this) {
     FinOperationType.INCOME -> OperationType.INCOME

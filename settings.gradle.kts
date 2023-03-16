@@ -1,4 +1,4 @@
-rootProject.name = "otusKotlin"
+rootProject.name = "fintrack"
 
 pluginManagement {
     val kotlinVersion: String by settings

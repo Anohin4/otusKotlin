@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.fintrack.api.v2
+package ru.otus.otuskotlin.fintrack.api
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -7,8 +7,8 @@ import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.otus.otusKotlin.api.v2.models.IResponse
-import ru.otus.otuskotlin.fintrack.api.v2.requests.IResponseStrategy
+import ru.otus.otuskotlin.fintrack.api.models.IResponse
+import ru.otus.otuskotlin.fintrack.api.responses.IResponseStrategy
 
 
 val AdResponseSerializer = ResponseSerializer(AdResponseSerializerBase)
@@ -28,8 +28,7 @@ private object AdResponseSerializerBase :
     }
 }
 
-class ResponseSerializer<T : IResponse>(private val serializer: KSerializer<T>) :
-    KSerializer<T> by serializer {
+class ResponseSerializer<T : IResponse>(private val serializer: KSerializer<T>) : KSerializer<T> by serializer {
     override fun serialize(encoder: Encoder, value: T) =
         IResponseStrategy
             .membersByClazz[value::class]

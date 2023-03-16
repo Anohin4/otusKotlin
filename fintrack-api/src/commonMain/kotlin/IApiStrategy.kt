@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.fintrack.api.v2
+package ru.otus.otuskotlin.fintrack.api
 
 import kotlinx.serialization.KSerializer
 import kotlin.reflect.KClass
