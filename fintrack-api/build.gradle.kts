@@ -6,8 +6,8 @@ plugins {
 
 kotlin {
     jvm { }
-    linuxX64 { }
-    macosX64 { }
+//    linuxX64 { }
+//    macosX64 { }
 
     sourceSets {
         val serializationVersion: String by project
@@ -44,8 +44,8 @@ kotlin {
  * Настраиваем генерацию здесь
  */
 openApiGenerate {
-    val openapiGroup = "${rootProject.group}.api.v2"
-    generatorName.set("kotlin") // Это и есть активный генератор
+    val openapiGroup = "${rootProject.group}.api"
+    generatorName.set("kotlin")
     packageName.set(openapiGroup)
     apiPackage.set("$openapiGroup.api")
     modelPackage.set("$openapiGroup.models")

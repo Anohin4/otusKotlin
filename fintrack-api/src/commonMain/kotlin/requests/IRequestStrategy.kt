@@ -1,7 +1,7 @@
-package ru.otus.otuskotlin.fintrack.api.v2.requests
+package ru.otus.otuskotlin.fintrack.api.requests
 
-import ru.otus.otusKotlin.api.v2.models.IRequest
-import ru.otus.otuskotlin.fintrack.api.v2.IApiStrategy
+import ru.otus.otusKotlin.api.models.IRequest
+import ru.otus.otuskotlin.fintrack.api.IApiStrategy
 
 sealed interface IRequestStrategy : IApiStrategy<IRequest> {
     companion object {

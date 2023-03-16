@@ -1,11 +1,11 @@
-package ru.otus.otuskotlin.fintrack.api.v2
+package ru.otus.otuskotlin.fintrack.api
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import ru.otus.otusKotlin.api.v2.models.*
+import ru.otus.otusKotlin.api.models.*
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -22,7 +22,7 @@ val apiV2Mapper = Json {
                 is OpReadRequest -> RequestSerializer(OpReadRequest.serializer()) as SerializationStrategy<IRequest>
                 is OpUpdateRequest -> RequestSerializer(OpUpdateRequest.serializer()) as SerializationStrategy<IRequest>
                 is OpDeleteRequest -> RequestSerializer(OpDeleteRequest.serializer()) as SerializationStrategy<IRequest>
-                is OpReadRequest -> RequestSerializer(OpReadRequest.serializer()) as SerializationStrategy<IRequest>
+                is OpReportRequest -> RequestSerializer(OpReportRequest.serializer()) as SerializationStrategy<IRequest>
                 else -> null
             }
         }
@@ -33,7 +33,7 @@ val apiV2Mapper = Json {
                 is OpReadResponse -> ResponseSerializer(OpReadResponse.serializer()) as SerializationStrategy<IResponse>
                 is OpUpdateResponse -> ResponseSerializer(OpUpdateResponse.serializer()) as SerializationStrategy<IResponse>
                 is OpDeleteResponse -> ResponseSerializer(OpDeleteResponse.serializer()) as SerializationStrategy<IResponse>
-                is OpReadResponse -> ResponseSerializer(OpReadResponse.serializer()) as SerializationStrategy<IResponse>
+                is OpReportResponse -> ResponseSerializer(OpReportResponse.serializer()) as SerializationStrategy<IResponse>
                 else -> null
             }
         }

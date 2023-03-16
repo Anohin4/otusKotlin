@@ -1,4 +1,4 @@
-import ru.otus.otusKotlin.api.v2.models.*
+import ru.otus.otusKotlin.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
 import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs

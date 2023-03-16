@@ -1,62 +1,66 @@
 package ru.otus.otuskotlin.marketplace.mappers.v2
 
-import ru.otus.otuskotlin.marketplace.api.v2.models.*
-import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.common.models.*
-import ru.otus.otuskotlin.marketplace.common.stubs.MkplStubs
+import ru.otus.otusKotlin.api.models.*
+import ru.otus.otuskotlin.fintrack.api.*
+import ru.otus.otuskotlin.fintrack.common.*
+import ru.otus.otuskotlin.fintrack.common.models.*
+import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs
+import ru.otus.otuskotlin.fintrack.mappers.v2.*
+import toTransport
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MapperTest {
     @Test
     fun fromTransport() {
-        val req = AdCreateRequest(
+        val req = OpCreateRequest(
             requestId = "1234",
-            debug = AdDebug(
-                mode = AdRequestDebugMode.STUB,
-                stub = AdRequestDebugStubs.SUCCESS,
+            debug = OpDebug(
+                mode = OpRequestDebugMode.STUB,
+                stub = OpRequestDebugStubs.SUCCESS,
             ),
-            ad = AdCreateObject(
-                title = "title",
-                description = "desc",
-                adType = DealSide.DEMAND,
-                visibility = AdVisibility.PUBLIC,
+            operation = OpCreateRequestObject(
+                name = "test operation",
+                description = "this is description",
+                opType = OperationType.EXPENSE,
+                amount = 12.1,
+                dateTime = "2022-07-24T09:36:13"
             ),
         )
 
-        val context = MkplContext()
+        val context = FinContext()
         context.fromTransport(req)
 
-        assertEquals(MkplStubs.SUCCESS, context.stubCase)
-        assertEquals(MkplWorkMode.STUB, context.workMode)
+        assertEquals(FinStubs.SUCCESS, context.stubCase)
+        assertEquals(FinWorkMode.STUB, context.workMode)
         assertEquals("title", context.adRequest.title)
-        assertEquals(MkplVisibility.VISIBLE_PUBLIC, context.adRequest.visibility)
-        assertEquals(MkplDealSide.DEMAND, context.adRequest.adType)
+        assertEquals(FinVisibility.VISIBLE_PUBLIC, context.adRequest.visibility)
+        assertEquals(FinDealSide.DEMAND, context.adRequest.adType)
     }
 
     @Test
     fun toTransport() {
-        val context = MkplContext(
-            requestId = MkplRequestId("1234"),
-            command = MkplCommand.CREATE,
-            adResponse = MkplAd(
-                title = "title",
-                description = "desc",
-                adType = MkplDealSide.DEMAND,
-                visibility = MkplVisibility.VISIBLE_PUBLIC,
+        val context = FinContext(
+            requestId = FinRequestId("1234"),
+            command = FinCommand.CREATE,
+            opResponse = FinOperation(
+                name = "THis is my name",
+                description = "smth",
+                opType = FinOperationType.EXPENSE
             ),
             errors = mutableListOf(
-                MkplError(
+                FinError(
                     code = "err",
                     group = "request",
                     field = "title",
                     message = "wrong title",
                 )
             ),
-            state = MkplState.RUNNING,
+            state = FinState.RUNNING
         )
 
-        val req = context.toTransportAd() as AdCreateResponse
+        val req = context.toTransport() as OpCreateResponse
 
         assertEquals("1234", req.requestId)
         assertEquals("title", req.ad?.title)

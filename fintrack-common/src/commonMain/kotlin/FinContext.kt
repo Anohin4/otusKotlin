@@ -19,5 +19,5 @@ data class FinContext(
     var opRequest: FinOperation = FinOperation(),
     var opFilterRequest: FinReportFilter = FinReportFilter(),
     var opResponse:FinOperation = FinOperation(),
-    var opsResponse:MutableList<FinOperation>
+    var opsResponse:MutableList<FinOperation> = mutableListOf()
 )

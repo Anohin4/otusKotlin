@@ -1,8 +1,8 @@
-package ru.otus.otuskotlin.fintrack.api.v2.requests
+package ru.otus.otuskotlin.fintrack.api.requests
 
 import kotlinx.serialization.KSerializer
-import ru.otus.otusKotlin.api.v2.models.IResponse
-import ru.otus.otusKotlin.api.v2.models.OpCreateResponse
+import ru.otus.otusKotlin.api.models.IResponse
+import ru.otus.otusKotlin.api.models.OpCreateResponse
 import kotlin.reflect.KClass
 
 object CreateResponseStrategy : IResponseStrategy {
