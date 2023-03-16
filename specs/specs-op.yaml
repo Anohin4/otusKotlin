@@ -103,7 +103,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OpSearchRequest'
+              $ref: '#/components/schemas/OpReportRequest'
         required: true
       responses:
         200:
@@ -187,31 +187,34 @@ components:
         - type: object
           properties:
             operation:
-              $ref: '#/components/schemas/OpCreateObject'
+              $ref: '#/components/schemas/OpCreateRequestObject'
     OpReadRequest:
       allOf:
         - $ref: '#/components/schemas/IRequest'
         - $ref: '#/components/schemas/OpRequestDebug'
         - type: object
+          required: [ operation ]
           properties:
-            ad:
-              $ref: '#/components/schemas/OpReadObject'
+            operation:
+              $ref: '#/components/schemas/OpReadRequestObject'
     OpUpdateRequest:
       allOf:
         - $ref: '#/components/schemas/IRequest'
         - $ref: '#/components/schemas/OpRequestDebug'
         - type: object
+          required: [ operation ]
           properties:
             operation:
-              $ref: '#/components/schemas/OpUpdateObject'
+              $ref: '#/components/schemas/OpUpdateRequestObject'
     OpDeleteRequest:
       allOf:
         - $ref: '#/components/schemas/IRequest'
         - $ref: '#/components/schemas/OpRequestDebug'
         - type: object
+          required: [ operation ]
           properties:
             operation:
-              $ref: '#/components/schemas/OpDeleteObject'
+              $ref: '#/components/schemas/OpDeleteRequestObject'
 
     OpReportRequest:
       allOf:
@@ -262,12 +265,14 @@ components:
     OpReadRequestObject:
       allOf:
         - type: object
+          required: [ id ]
           properties:
             id:
               $ref: '#/components/schemas/OpId'
     OpDeleteRequestObject:
       allOf:
         - type: object
+          required: [ id ]
           properties:
             id:
               $ref: '#/components/schemas/OpId'
@@ -280,17 +285,36 @@ components:
               $ref: '#/components/schemas/OpResponseObject'
 
     OpResponseMulti:
-      allOf:
-        - type: array
+      properties:
+        operations:
+          type: array
           description: Ответ с одним объектом объявления
-          properties:
-            operation:
-              $ref: '#/components/schemas/OpResponseObject'
-
+          items:
+            $ref: '#/components/schemas/OpResponseObject'
     OpResponseObject:
-      allOf:
-        - $ref: '#/components/schemas/OpId'
-        - $ref: '#/components/schemas/BaseOperation'
+      properties:
+        id:
+          $ref: '#/components/schemas/OpId'
+        name:
+          type: string
+          description: Наименование операции
+        description:
+          type: string
+          description: Описание операции
+        partner:
+          type: string
+          description: имя юр лица контрагента
+        amount:
+          type: number
+          description: сумма операции
+        dateTime:
+          type: string
+          format: date-time
+          description: дата и время совершения операции
+        opType:
+          $ref: '#/components/schemas/OperationType'
+        category:
+          $ref: '#/components/schemas/OperationCategory'
 
 
     OpCreateResponse:
@@ -328,11 +352,9 @@ components:
         - success
         - notFound
         - badId
-        - badTitle
-        - badDescription
-        - badVisibility
-        - cannotDelete
-        - badSearchString
+        - badAmount
+        - badCategory
+
     OpId:
       type: string
       description: Идентификатор операции

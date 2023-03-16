@@ -15,4 +15,7 @@ pluginManagement {
     }
 }
 
-include("m1l2")
+
+include("fintrack-common")
+include("fintrack-api")
+include("fintrack-mapper")
