@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.fintrack.mappers.v2.exceptions
+package ru.otus.otuskotlin.fintrack.mappers.exceptions
 
 import ru.otus.otuskotlin.fintrack.common.models.FinCommand
 

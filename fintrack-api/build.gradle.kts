@@ -6,8 +6,8 @@ plugins {
 
 kotlin {
     jvm { }
-    linuxX64 { }
-    macosX64 { }
+//    linuxX64 { }
+//    macosX64 { }
 
     sourceSets {
         val serializationVersion: String by project
