@@ -1,0 +1,431 @@
+openapi: 3.0.4
+info:
+  title: Fintrack
+  description: Tracking financial operations
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+tags:
+  - name: op
+    description: Объявление (о покупке или продаже)
+paths:
+  /operation/create:
+    post:
+      tags:
+        - op
+      summary: Create operation
+      operationId: opCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpCreateResponse'
+  /op/read:
+    post:
+      tags:
+        - op
+      summary: Read operation
+      operationId: opRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpReadResponse'
+  /op/update:
+    post:
+      tags:
+        - op
+      summary: Update operation
+      operationId: opUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpUpdateResponse'
+  /op/delete:
+    post:
+      tags:
+        - op
+      summary: Delete operation
+      operationId: opDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpDeleteResponse'
+  /report:
+    post:
+      tags:
+        - report
+      summary: Report request
+      operationId: report
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpReportRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpReportResponse'
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/OpCreateRequest'
+          update: '#/components/schemas/OpUpdateRequest'
+          delete: '#/components/schemas/OpDeleteRequest'
+          read: '#/components/schemas/OpReadRequest'
+          report: '#/components/schemas/OpReportRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/OpCreateResponse'
+          update: '#/components/schemas/OpUpdateResponse'
+          delete: '#/components/schemas/OpDeleteResponse'
+          read: '#/components/schemas/OpReadResponse'
+          report: '#/components/schemas/OpSearchResponse'
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    OpCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/OpRequestDebug'
+        - type: object
+          properties:
+            operation:
+              $ref: '#/components/schemas/OpCreateRequestObject'
+    OpReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/OpRequestDebug'
+        - type: object
+          required: [ operation ]
+          properties:
+            operation:
+              $ref: '#/components/schemas/OpReadRequestObject'
+    OpUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/OpRequestDebug'
+        - type: object
+          required: [ operation ]
+          properties:
+            operation:
+              $ref: '#/components/schemas/OpUpdateRequestObject'
+    OpDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/OpRequestDebug'
+        - type: object
+          required: [ operation ]
+          properties:
+            operation:
+              $ref: '#/components/schemas/OpDeleteRequestObject'
+
+    OpReportRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/OpRequestDebug'
+        - type: object
+          properties:
+            opFilter:
+              $ref: '#/components/schemas/OpReportFilter'
+
+    OpReportFilter:
+      type: object
+      description: Набор фильтров для поиска
+      required:
+        - dateTimeTo
+      properties:
+        dateTimeFrom:
+          type: string
+          format: date-time
+          description: Дата начала отчета
+        dateTimeTo:
+          type: string
+          format: date-time
+          description: Дата окончания отчета, если не указан - берется текущая дата
+        category:
+          $ref: '#/components/schemas/OperationCategory'
+        name:
+          type: string
+          description: Наименование операции
+        partner:
+          type: string
+          description: имя юр лица контрагента
+        opType:
+          $ref: '#/components/schemas/OperationType'
+
+
+    OpCreateRequestObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseOperation'
+    OpUpdateRequestObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/OpId'
+        - $ref: '#/components/schemas/BaseOperation'
+
+    OpReadRequestObject:
+      allOf:
+        - type: object
+          required: [ id ]
+          properties:
+            id:
+              $ref: '#/components/schemas/OpId'
+    OpDeleteRequestObject:
+      allOf:
+        - type: object
+          required: [ id ]
+          properties:
+            id:
+              $ref: '#/components/schemas/OpId'
+    OpResponseSingle:
+      allOf:
+        - type: object
+          description: Ответ с одним объектом объявления
+          properties:
+            operation:
+              $ref: '#/components/schemas/OpResponseObject'
+
+    OpResponseMulti:
+      properties:
+        operations:
+          type: array
+          description: Ответ с одним объектом объявления
+          items:
+            $ref: '#/components/schemas/OpResponseObject'
+    OpResponseObject:
+      properties:
+        id:
+          $ref: '#/components/schemas/OpId'
+        name:
+          type: string
+          description: Наименование операции
+        description:
+          type: string
+          description: Описание операции
+        partner:
+          type: string
+          description: имя юр лица контрагента
+        amount:
+          type: number
+          description: сумма операции
+        dateTime:
+          type: string
+          format: date-time
+          description: дата и время совершения операции
+        opType:
+          $ref: '#/components/schemas/OperationType'
+        category:
+          $ref: '#/components/schemas/OperationCategory'
+
+
+    OpCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/OpResponseSingle'
+
+
+    OpUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/OpResponseSingle'
+
+    OpReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/OpResponseSingle'
+
+    OpDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/OpResponseSingle'
+
+    OpReportResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/OpResponseMulti'
+
+
+
+    OpRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badId
+        - badAmount
+        - badCategory
+
+    OpId:
+      type: string
+      description: Идентификатор операции
+
+    BaseOperation:
+      type: object
+      description: Объект описывает свойства, одинаковые для create и update
+      required:
+        - name
+        - amount
+        - dateTime
+        - opType
+      properties:
+        name:
+          type: string
+          description: Наименование операции
+        description:
+          type: string
+          description: Описание операции
+        partner:
+          type: string
+          description: имя юр лица контрагента
+        amount:
+          type: number
+          description: сумма операции
+        dateTime:
+          type: string
+          format: date-time
+          description: дата и время совершения операции
+        opType:
+          $ref: '#/components/schemas/OperationType'
+        category:
+          $ref: '#/components/schemas/OperationCategory'
+
+    OperationType:
+      type: string
+      description: 'Тип операции - приход или расход'
+      enum:
+        - income
+        - expense
+
+    OperationCategory:
+      type: string
+      description: 'Категория операци - такси, еда и тд'
+      enum:
+        - entertainment
+        - taxi
+        - health
+        - pet
+        - food
+        - automobile
+        - other
+
+    # STUBS ======================
+    OpRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    OpRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/OpDebug'
+
+    OpDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/OpRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/OpRequestDebugStubs'

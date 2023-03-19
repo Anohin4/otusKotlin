@@ -1,4 +1,4 @@
-rootProject.name = "otusKotlin"
+rootProject.name = "fintrack"
 
 pluginManagement {
     val kotlinVersion: String by settings
@@ -15,4 +15,7 @@ pluginManagement {
     }
 }
 
-include("m1l2")
+
+include("fintrack-common")
+include("fintrack-api")
+include("fintrack-mapper")
