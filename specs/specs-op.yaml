@@ -1,15 +1,15 @@
 openapi: 3.0.4
 info:
-  title: Marketplace
-  description: This is a place where sellers and buyers meat each other
+  title: Fintrack
+  description: Tracking financial operations
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/v1
+  - url: http://localhost:8080/
 tags:
-  - name: ad
+  - name: op
     description: Объявление (о покупке или продаже)
 paths:
   /operation/create:
