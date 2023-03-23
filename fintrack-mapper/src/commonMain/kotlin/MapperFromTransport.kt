@@ -5,7 +5,7 @@ import ru.otus.otuskotlin.fintrack.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
 import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs
-import ru.otus.otuskotlin.fintrack.mappers.v2.exceptions.UnknownRequestClassException
+import ru.otus.otuskotlin.fintrack.mappers.exceptions.UnknownRequestClassException
 
 fun FinContext.fromTransport(request: IRequest) = when (request) {
     is OpCreateRequest -> fromTransport(request)

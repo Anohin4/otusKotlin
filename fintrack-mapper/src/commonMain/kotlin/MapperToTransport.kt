@@ -3,7 +3,7 @@ package ru.otus.otuskotlin.fintrack.mappers
 import ru.otus.otuskotlin.fintrack.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
-import ru.otus.otuskotlin.fintrack.mappers.v2.exceptions.UnknownRequestClassException
+import ru.otus.otuskotlin.fintrack.mappers.exceptions.UnknownRequestClassException
 
 
 fun FinContext.toTransport() = when (command) {

@@ -32,7 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpCreateResponse'
-  /op/read:
+  /operation/read:
     post:
       tags:
         - op
@@ -52,7 +52,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpReadResponse'
-  /op/update:
+  /operation/update:
     post:
       tags:
         - op
@@ -72,7 +72,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpUpdateResponse'
-  /op/delete:
+  /operation/delete:
     post:
       tags:
         - op

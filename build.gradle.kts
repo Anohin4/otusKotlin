@@ -1,11 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
 }
 
 group = "ru.otus.otuskotlin.fintrack"
 version = "0.0.1-SNAPSHOT"
+
+val JVM_TARGET = "11"
 
 allprojects {
     repositories {
@@ -21,6 +24,9 @@ subprojects {
     version = rootProject.version
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = JVM_TARGET
+    }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile> {
+        kotlinOptions.jvmTarget = JVM_TARGET
     }
 }
