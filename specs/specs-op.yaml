@@ -229,7 +229,7 @@ components:
       type: object
       description: Набор фильтров для поиска
       required:
-        - dateTimeTo
+        - dateTimeFrom
       properties:
         dateTimeFrom:
           type: string

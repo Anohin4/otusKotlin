@@ -1,15 +1,12 @@
-package ru.otus.otuskotlin.marketplace.mappers.v2
+package ru.otus.otuskotlin.fintrack.mappers.v2
+
 
 import ru.otus.otuskotlin.fintrack.api.models.*
-import ru.otus.otuskotlin.fintrack.api.*
-import ru.otus.otuskotlin.fintrack.common.*
+import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
 import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs
 import ru.otus.otuskotlin.fintrack.mappers.fromTransport
 import ru.otus.otuskotlin.fintrack.mappers.toTransport
-import ru.otus.otuskotlin.fintrack.mappers.v2.*
-
-
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -13,36 +13,33 @@ import ru.otus.otuskotlin.fintrack.api.models.OpUpdateRequest
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.mappers.fromTransport
 import ru.otus.otuskotlin.fintrack.mappers.toTransport
-import ru.otus.otuskotlin.fintrack.stubs.FinStub
+import ru.otus.otuskotlin.fintrack.service.operation.OperationService
 
-suspend fun ApplicationCall.operationDelete() {
+
+suspend fun ApplicationCall.operationDelete(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpDeleteRequest>(receiveText())
-    val context = FinContext()
     context.fromTransport(request)
-    context.opResponse = FinStub.get()
+    context.opResponse = repository.deleteOperation(context.opRequest)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
-suspend fun ApplicationCall.operationRead() {
+suspend fun ApplicationCall.operationRead(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpReadRequest>(receiveText())
-    val context = FinContext()
     context.fromTransport(request)
-    context.opResponse = FinStub.get()
+    context.opResponse = repository.readOperation(context.opRequest)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
-suspend fun ApplicationCall.operationCreate() {
+suspend fun ApplicationCall.operationCreate(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpCreateRequest>(receiveText())
-    val context = FinContext()
     context.fromTransport(request)
-    context.opResponse = FinStub.get()
+    context.opResponse = repository.createOperation(context.opRequest)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
-suspend fun ApplicationCall.operationUpdate() {
+suspend fun ApplicationCall.operationUpdate(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpUpdateRequest>(receiveText())
-    val context = FinContext()
     context.fromTransport(request)
-    context.opResponse = FinStub.get()
+    context.opResponse = repository.deleteOperation(context.opRequest)
     respond(apiMapper.encodeToString(context.toTransport()))
 }

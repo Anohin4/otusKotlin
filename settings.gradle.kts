@@ -12,8 +12,6 @@ pluginManagement {
         id("io.kotest.multiplatform") version kotestVersion apply false
         kotlin("plugin.serialization") version kotlinVersion apply false
         id("io.ktor.plugin") version ktorPluginVersion apply false
-
-
         id("org.openapi.generator") version openapiVersion apply false
     }
 }
@@ -25,4 +23,6 @@ include("fintrack-mapper")
 
 include("fintrack-stubs")
 include("fintrack-ktor")
+include("fintrack-service")
+include("fintrack-ktor-plugin")
 
