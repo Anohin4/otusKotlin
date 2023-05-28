@@ -5,9 +5,11 @@ import kotlin.random.Random
 
 @JvmInline
 value class FinRequestId(private val id: String) {
+
     fun asString(): String = id
     companion object{
         val NONE = FinRequestId("")
-        val RANDOM = FinRequestId(Random.nextInt().toString())
+        val RANDOM
+            get() = FinRequestId(Random.nextInt().toString())
     }
 }
