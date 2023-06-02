@@ -5,7 +5,7 @@ import ru.otus.otuskotlin.fintrack.api.models.*
 import ru.otus.otuskotlin.fintrack.common.FinContext
 import ru.otus.otuskotlin.fintrack.common.models.*
 import ru.otus.otuskotlin.fintrack.common.stubs.FinStubs
-import ru.otus.otuskotlin.fintrack.mappers.v2.exceptions.UnknownRequestClassException
+import ru.otus.otuskotlin.fintrack.mappers.exceptions.UnknownRequestClassException
 
 fun FinContext.fromTransport(request: IRequest) = when (request) {
     is OpCreateRequest -> fromTransport(request)
@@ -16,7 +16,7 @@ fun FinContext.fromTransport(request: IRequest) = when (request) {
     else -> throw UnknownRequestClassException(request::class)
 }
 
-fun IRequest?.requestId() = this?.requestId?.let { FinRequestId(it) } ?: FinRequestId.NONE
+fun IRequest?.requestId() = this?.requestId?.let { FinRequestId(it) } ?: FinRequestId.RANDOM
 fun String?.toOpId() = this?.let { FinOperationId(it) } ?: FinOperationId.NONE
 fun String?.toOperationWithId() = FinOperation(id = this.toOpId())
 
@@ -54,7 +54,7 @@ fun FinContext.fromTransport(request: OpUpdateRequest) {
 }
 
 fun FinContext.fromTransport(request: OpReportRequest) {
-    command = FinCommand.UPDATE
+    command = FinCommand.REPORT
     requestId = request.requestId()
     opFilterRequest = request.opFilter.toInternal()
     workMode = request.debug.transportToWorkNode()
