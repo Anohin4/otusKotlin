@@ -10,7 +10,7 @@ import org.junit.Test
 import org.koin.core.context.GlobalContext.stopKoin
 import ru.otus.otuskotlin.fintrack.api.apiMapper
 import ru.otus.otuskotlin.fintrack.api.models.*
-import ru.otus.otuskotlin.fintrack.app.plugins.configureKoin
+import ru.otus.otuskotlin.fintrack.app.plugins.koin.configureKoin
 import ru.otus.otuskotlin.fintrack.app.plugins.configureRouting
 import ru.otus.otuskotlin.fintrack.stubs.FinStub
 

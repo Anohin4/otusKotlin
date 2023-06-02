@@ -43,3 +43,7 @@ val apiMapper = Json {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> apiRequestDeserialize(json: String): T = apiMapper.decodeFromString(AdRequestSerializer, json) as T
+
+fun apiResponseSerialize(Response: IResponse): String = apiMapper.encodeToString(AdResponseSerializer, Response)

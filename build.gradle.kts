@@ -30,3 +30,4 @@ subprojects {
         kotlinOptions.jvmTarget = JVM_TARGET
     }
 }
+
