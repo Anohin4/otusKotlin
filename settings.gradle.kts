@@ -25,4 +25,5 @@ include("fintrack-stubs")
 include("fintrack-ktor")
 include("fintrack-service")
 include("fintrack-ktor-plugin")
+include("fintrack-kafka")
 

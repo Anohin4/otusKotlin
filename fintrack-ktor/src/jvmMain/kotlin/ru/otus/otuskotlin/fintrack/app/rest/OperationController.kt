@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.fintrack.app.controller
+package ru.otus.otuskotlin.fintrack.app.rest
 
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -19,27 +19,27 @@ import ru.otus.otuskotlin.fintrack.service.operation.OperationService
 suspend fun ApplicationCall.operationDelete(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpDeleteRequest>(receiveText())
     context.fromTransport(request)
-    context.opResponse = repository.deleteOperation(context.opRequest)
+    repository.process(context)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
 suspend fun ApplicationCall.operationRead(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpReadRequest>(receiveText())
     context.fromTransport(request)
-    context.opResponse = repository.readOperation(context.opRequest)
+    repository.process(context)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
 suspend fun ApplicationCall.operationCreate(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpCreateRequest>(receiveText())
     context.fromTransport(request)
-    context.opResponse = repository.createOperation(context.opRequest)
+    repository.process(context)
     respond(apiMapper.encodeToString(context.toTransport()))
 }
 
 suspend fun ApplicationCall.operationUpdate(context: FinContext, repository: OperationService) {
     val request = apiMapper.decodeFromString<OpUpdateRequest>(receiveText())
     context.fromTransport(request)
-    context.opResponse = repository.deleteOperation(context.opRequest)
+    repository.process(context)
     respond(apiMapper.encodeToString(context.toTransport()))
 }

@@ -10,8 +10,8 @@ import org.junit.Test
 import org.koin.core.context.GlobalContext.stopKoin
 import ru.otus.otuskotlin.fintrack.api.apiMapper
 import ru.otus.otuskotlin.fintrack.api.models.*
-import ru.otus.otuskotlin.fintrack.app.plugins.configureKoin
 import ru.otus.otuskotlin.fintrack.app.plugins.configureRouting
+import ru.otus.otuskotlin.fintrack.app.plugins.koin.configureKoin
 import ru.otus.otuskotlin.fintrack.stubs.FinStub
 
 
@@ -25,19 +25,8 @@ class OperationStubApiTest {
     fun create() = testApplication {
         configureTestContext()
         val response = client.post("/operation/create") {
-            val requestObj = OpCreateRequest(
-                requestType = "create",
-                requestId = "12345",
-                operation = OpCreateRequestObject(
-                    name = "Кино",
-                    description = "сходили в кино",
-                    opType = OperationType.EXPENSE,
-                    amount = 150.0,
-                    dateTime = "2005-08-09T18:31:42"
-                )
-            )
+            val requestJson = createRequestAsString()
             contentType(ContentType.Application.Json)
-            val requestJson = apiMapper.encodeToString(requestObj)
             println(requestJson)
             setBody(requestJson)
         }
@@ -52,15 +41,8 @@ class OperationStubApiTest {
     fun read() = testApplication {
         configureTestContext()
         val response = client.post("/operation/read") {
-            val requestObj = OpReadRequest(
-                requestType = "read",
-                requestId = "12345",
-                operation = OpReadRequestObject(
-                    id = "12"
-                )
-            )
             contentType(ContentType.Application.Json)
-            val requestJson = apiMapper.encodeToString(requestObj)
+            val requestJson = readRequestAsString()
             println(requestJson)
             setBody(requestJson)
         }
@@ -75,15 +57,8 @@ class OperationStubApiTest {
     fun delete() = testApplication {
         configureTestContext()
         val response = client.post("/operation/delete") {
-            val requestObj = OpDeleteRequest(
-                requestType = "delete",
-                requestId = "12345",
-                operation = OpDeleteRequestObject(
-                    id = "Кино"
-                )
-            )
             contentType(ContentType.Application.Json)
-            val requestJson = apiMapper.encodeToString(requestObj)
+            val requestJson = deleteRequestAsString()
             println(requestJson)
             setBody(requestJson)
         }
@@ -97,19 +72,8 @@ class OperationStubApiTest {
     fun update() = testApplication {
         configureTestContext()
         val response = client.post("/operation/update") {
-            val requestObj = OpUpdateRequest(
-                requestType = "update",
-                requestId = "12345",
-                operation = OpUpdateRequestObject(
-                    name = "Кино",
-                    description = "сходили в кино",
-                    opType = OperationType.EXPENSE,
-                    amount = 150.0,
-                    dateTime = "2005-08-09T18:31:42"
-                )
-            )
             contentType(ContentType.Application.Json)
-            val requestJson = apiMapper.encodeToString(requestObj)
+            val requestJson = updateRequestAsString()
             println(requestJson)
             setBody(requestJson)
         }
@@ -124,17 +88,8 @@ class OperationStubApiTest {
     fun report() = testApplication {
         configureTestContext()
         val response = client.post("/report") {
-            val requestObj = OpReportRequest(
-                requestType = "report",
-                requestId = "12345",
-                opFilter = OpReportFilter(
-                    name = "Кино",
-                    dateTimeFrom = "2005-08-09T18:31:42",
-                    opType = OperationType.EXPENSE
-                )
-            )
+            val requestJson = reportRequestAsString()
             contentType(ContentType.Application.Json)
-            val requestJson = apiMapper.encodeToString(requestObj)
             println(requestJson)
             setBody(requestJson)
         }

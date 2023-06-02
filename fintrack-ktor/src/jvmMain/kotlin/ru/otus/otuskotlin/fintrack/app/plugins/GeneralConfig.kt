@@ -17,6 +17,7 @@ public fun Application.configureMapping() {
 public fun Application.configureLogging() {
     install(CallLogging) {
         level = Level.INFO
+
     }
 }
 
