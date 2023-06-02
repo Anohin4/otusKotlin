@@ -16,6 +16,8 @@ val kotlinLoggingJvmVersion: String by project
 val coroutinesVersion: String by project
 val kotestVersion: String by project
 val testContainersVersion: String by project
+val kotestTestContainers: String by project
+val kotestKoin: String by project
 
 plugins {
     id("application")
@@ -75,7 +77,6 @@ kotlin {
                     implementation("ch.qos.logback:logback-classic:$logbackVersion")
                     implementation(ktor("call-logging"))
 
-                    implementation("io.kotest.extensions:kotest-extensions-koin:1.1.0")
                     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
                     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion") // "io.ktor:ktor-server-auth:$ktorVersion"
                 }
@@ -88,15 +89,12 @@ kotlin {
                 implementation(kotlin("test-junit"))
                 implementation(ktor("test-host"))
                 implementation(ktor("content-negotiation", prefix = "client-"))
-                implementation("io.kotest.extensions:kotest-extensions-testcontainers:1.3.4")
+                implementation("io.kotest.extensions:kotest-extensions-testcontainers:${kotestTestContainers}")
+                implementation("io.kotest.extensions:kotest-extensions-koin:${kotestKoin}")
                 implementation("io.kotest:kotest-runner-junit5:${kotestVersion}")
                 implementation("io.kotest:kotest-assertions-core:${kotestVersion}")
-                implementation("io.kotest.extensions:kotest-extensions-koin:1.1.0")
                 implementation("org.testcontainers:kafka:${testContainersVersion}")
                 implementation("io.insert-koin:koin-test:${koinVersion}")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
-
-
             }
         }
     }
