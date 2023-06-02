@@ -8,6 +8,7 @@ import io.kotest.extensions.testcontainers.TestContainerExtension
 import io.kotest.extensions.testcontainers.kafka.createStringStringConsumer
 import io.kotest.extensions.testcontainers.kafka.createStringStringProducer
 import io.kotest.koin.KoinExtension
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -33,14 +34,6 @@ import kotlin.time.Duration.Companion.seconds
 
 var inputTopic = "inputTopic"
 var outputTopics = "outputTopic"
-var messageInput = """
-    {"requestType":"create","requestId":"12345","debug":null,"operation":{"name":"Кино","amount":150.0,"dateTime":"2005-08-09T18:31:42","opType":"expense","description":"сходили в кино","partner":null,"category":null}}
-""".trimIndent()
-
-val messageOutput = """
-    {"_":"ru.otus.otuskotlin.fintrack.api.models.OpCreateResponse","responseType":"create","requestId":"12345","result":"error","errors":null,"operation":{"id":"123456","name":"Закупка продуктов","description":"Закупились продуктами на неделю","partner":"VKUSSVIL LLC","amount":5555.53,"dateTime":"2022-07-24T09:36:13","opType":"expense","category":"food"}}
-""".trimIndent()
-
 class KafkaTest : FunSpec(), KoinTest {
     val kafkaContainer =
         install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
@@ -54,48 +47,57 @@ class KafkaTest : FunSpec(), KoinTest {
     }
 
     init {
-
         val testProducer = kafkaContainer.createStringStringProducer()
         val testConsumer = kafkaContainer.createStringStringConsumer{
             mapOf(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "myRandomGroup")
         }
-        val kafkaConsumer by inject<FintrackKafkaConsumer>()
+        beforeTest {
+            testProducer.send(ProducerRecord(outputTopics, "test"))
+            testProducer.flush()
 
-
-        test("Kafka create operation").config(timeout = 30.seconds) {
-            runKafkaTest(kafkaConsumer, testProducer, testConsumer, "create")
+            testConsumer.subscribe(listOf(outputTopics))
+            //апи кафки не гарантирует доставку с первого раза сообщения, поэтому на всякий случай повторим запрос
+            repeat(3) {
+                testConsumer.poll(Duration.ofSeconds(1))
+            }
         }
-        test("Kafka delete operation").config(timeout = 30.seconds) {
-            runKafkaTest(kafkaConsumer, testProducer, testConsumer, "delete")
+
+
+        test("Kafka create operation test").config(timeout = 30.seconds) {
+            runKafkaTest( testProducer, testConsumer, "create", createRequestAsString())
+        }
+        test("Kafka read operation test").config(timeout = 30.seconds) {
+            runKafkaTest( testProducer, testConsumer, "read",readRequestAsString())
+        }
+        test("Kafka delete operation test").config(timeout = 30.seconds) {
+            runKafkaTest( testProducer, testConsumer, "delete", deleteRequestAsString())
+        }
+        test("Kafka update operation test").config(timeout = 30.seconds) {
+            runKafkaTest( testProducer, testConsumer, "update", updateRequestAsString())
         }
     }
 
     private suspend fun TestScope.runKafkaTest(
-        kafkaConsumer: FintrackKafkaConsumer,
         testProducer: KafkaProducer<String, String>,
         testConsumer: KafkaConsumer<String, String>,
-        responseType:String
+        responseType:String,
+        message: String
     ) {
+        val kafkaConsumer by inject<FintrackKafkaConsumer>()
         val job = launch {
             kafkaConsumer.run()
         }
 
         var secondJob = launch {
             delay(1000)
-            testProducer.send(ProducerRecord(inputTopic, messageInput))
+            testProducer.send(ProducerRecord(inputTopic, message))
             kafkaConsumer.stop()
         }
 
         job.join()
         secondJob.join()
 
-        //подписываемся на топик
-        testConsumer.subscribe(listOf(outputTopics))
-        //регестрируемся в кафке
-        testConsumer.poll(Duration.ofSeconds(1))
-        //ставим поиск с самого начала
-        testConsumer.seekToBeginning(testConsumer.assignment())
         while (true) {
             var recordsNew = testConsumer.poll(Duration.ofSeconds(2))
 
@@ -103,9 +105,9 @@ class KafkaTest : FunSpec(), KoinTest {
                 assertEquals(1, recordsNew.count())
                 for (consumerRecord in recordsNew.asIterable()) {
                     val value = consumerRecord.value()
-                    assertTrue(value.contains("responseType"))
-                    assertTrue(value.contains(responseType))
-                    assertTrue(value.contains("Закупились продуктами на неделю"))
+                    value.contains("responseType") shouldBe true
+                    value.contains(responseType) shouldBe true
+                    value.contains("Закупились продуктами на неделю") shouldBe true
                 }
                 break
             }

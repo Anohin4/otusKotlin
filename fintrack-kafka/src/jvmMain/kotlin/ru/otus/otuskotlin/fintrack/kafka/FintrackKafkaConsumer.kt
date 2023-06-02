@@ -1,7 +1,10 @@
 package ru.otus.otuskotlin.fintrack.app.kafka
 
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import kotlinx.datetime.Clock
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -35,10 +38,10 @@ class FintrackKafkaConsumer(
     private val topics: List<ConsumerStrategy>,
     private val service: OperationService
 ) {
-    private val errorTopicsByOutput = topics.associate {
+    private val errorTopicsByInput = topics.associate {
         val topics = it.topics(config)
         Pair(
-            topics.output,
+            topics.input,
             topics.error
         )
     }
@@ -54,9 +57,6 @@ class FintrackKafkaConsumer(
 
     suspend fun run() =
         try {
-
-            println(config.kafkaHosts)
-            println(consumer.subscription())
             while (process.value) {
                 val ctx = FinContext(
                     timeStart = Clock.System.now(),
@@ -67,22 +67,17 @@ class FintrackKafkaConsumer(
                 }
                 if (!records.isEmpty)
                     println() { "Receive ${records.count()} messages" }
-
                 records.forEach { record: ConsumerRecord<String, IRequest> ->
                     try {
                         println("process from ${record.topic()}:\n${record.value()}")
-
                         ctx.fromTransport(record.value())
                         service.process(ctx)
                         val response = ctx.toTransport()
                         println("sending response to ${topicsByInputTopic[record.topic()]}")
-
                         responseProducer.send(ProducerRecord(topicsByInputTopic[record.topic()], response))
                     } catch (ex: Exception) {
-                        println(record)
-                        println(ex)
                         log.error(ex) { "error" }
-                        errorProducer.send(ProducerRecord(errorTopicsByOutput[record.topic()], record.toString()))
+                        errorProducer.send(ProducerRecord(errorTopicsByInput[record.topic()], record.toString()))
                     }
                 }
                 yield()
